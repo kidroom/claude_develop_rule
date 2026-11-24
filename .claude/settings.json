@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr merge *)",
+      "Bash(npm install *)",
+      "Bash(npm i *)",
+      "Bash(npm uninstall *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm remove *)",
+      "Bash(yarn add *)",
+      "Bash(yarn remove *)",
+      "Bash(pip install *)",
+      "Bash(pip uninstall *)",
+      "Bash(poetry add *)",
+      "Bash(poetry remove *)",
+      "Bash(uv add *)",
+      "Bash(uv remove *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet remove *)",
+      "Bash(go get *)",
+      "Bash(cargo add *)",
+      "Bash(cargo remove *)",
+      "Edit(**/package.json)",
+      "Edit(**/package-lock.json)",
+      "Edit(**/pnpm-lock.yaml)",
+      "Edit(**/yarn.lock)",
+      "Edit(**/requirements*.txt)",
+      "Edit(**/pyproject.toml)",
+      "Edit(**/poetry.lock)",
+      "Edit(**/*.csproj)",
+      "Edit(**/*.sln)",
+      "Edit(**/*.slnx)",
+      "Edit(**/Directory.*.props)",
+      "Edit(**/global.json)",
+      "Edit(**/go.mod)",
+      "Edit(**/go.sum)",
+      "Edit(**/Cargo.toml)",
+      "Edit(**/Cargo.lock)",
+      "Edit(**/pom.xml)",
+      "Edit(**/build.gradle*)",
+      "Edit(**/.env*)",
+      "Edit(**/.editorconfig)",
+      "Edit(**/Dockerfile*)",
+      "Edit(**/docker-compose*)",
+      "Edit(.github/workflows/**)",
+      "Edit(**/azure-pipelines*)",
+      "Edit(**/pipelines/**)",
+      "Edit(**/.gitlab-ci.yml)",
+      "Edit(**/Jenkinsfile)",
+      "Edit(.husky/**)",
+      "Edit(**/.pre-commit-config.yaml)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/secrets.json)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push --delete *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)",
+      "Bash(git branch -D *)",
+      "Bash(rm -rf *)",
+      "Edit(**/node_modules/**)",
+      "Edit(**/.venv/**)",
+      "Edit(.git/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard.mjs\"",
+            "timeout": 30,
+            "statusMessage": "檢查密鑰與 git 規範"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/format-on-edit.mjs\"",
+            "timeout": 60,
+            "statusMessage": "執行 formatter"
+          }
+        ]
+      }
+    ]
+  }
+}
